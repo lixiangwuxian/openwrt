@@ -24,7 +24,6 @@ case "$FIRMWARE" in
 	case $board in
 	dlink,dir-510l|\
 	dlink,dwr-116-a1|\
-	dlink,dwr-118-a1|\
 	dlink,dwr-118-a2|\
 	dlink,dwr-921-c1|\
 	dlink,dwr-922-e2|\

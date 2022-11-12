@@ -7,7 +7,7 @@
 
 / {
 	compatible = "dlink,dwr-118-a1", "ralink,mt7620a-soc";
-	model = "D-Link DWR-118 A1";
+	model = "SR800";
 
 	aliases {
 		led-boot = &led_internet;
@@ -17,16 +17,9 @@
 
 	keys {
 		compatible = "gpio-keys";
-
-		wps {
-			label = "wps";
-			gpios = <&gpio0 12 GPIO_ACTIVE_LOW>;
-			linux,code = <KEY_WPS_BUTTON>;
-		};
-
 		reset {
 			label = "reset";
-			gpios = <&gpio0 13 GPIO_ACTIVE_LOW>;
+			gpios = <&gpio0 1 GPIO_ACTIVE_LOW>;
 			linux,code = <KEY_RESTART>;
 		};
 	};
@@ -56,7 +49,7 @@
 
 		usb {
 			label = "green:usb";
-			gpios = <&gpio0 11 GPIO_ACTIVE_LOW>;
+			gpios = <&gpio0 0 GPIO_ACTIVE_LOW>;
 			trigger-sources = <&ohci_port1>, <&ehci_port1>;
 			linux,default-trigger = "usbport";
 		};
@@ -69,7 +62,7 @@
 		usb {
 			gpio-export,name = "usb";
 			gpio-export,output = <0>;
-			gpios = <&gpio1 14 GPIO_ACTIVE_LOW>;
+			gpios = <&gpio0 0 GPIO_ACTIVE_LOW>;
 		};
 	};
 };
@@ -92,7 +85,7 @@
 	flash@0 {
 		compatible = "jedec,spi-nor";
 		reg = <0>;
-		spi-max-frequency = <80000000>;
+		spi-max-frequency = <50000000>;
 
 		partitions {
 			compatible = "fixed-partitions";
@@ -100,21 +93,26 @@
 			#size-cells = <1>;
 
 			partition@0 {
-				label = "jboot";
-				reg = <0x0 0x10000>;
+				label = "u-boot";
+				reg = <0x0 0x30000>;
+			};
+
+			partition@30000 {
+				label = "u-boot-env";
+				reg = <0x30000 0x10000>;
 				read-only;
 			};
 
-			partition@10000 {
-				compatible = "amit,jimage";
+			factory: partition@40000 {
+				label = "factory";
+				reg = <0x40000 0x10000>;
+				read-only;
+			};
+
+			partition@50000 {
+				compatible = "denx,uimage";
 				label = "firmware";
-				reg = <0x10000 0xfe0000>;
-			};
-
-			config: partition@ff0000 {
-				label = "config";
-				reg = <0xff0000 0x10000>;
-				read-only;
+				reg = <0x50000 0xfb0000>;
 			};
 		};
 	};
@@ -142,9 +140,7 @@
 &pcie0 {
 	wifi@0,0 {
 		reg = <0x0000 0 0 0 0>;
-		mtd-mac-address = <&config 0xe496>;
-		mtd-mac-address-increment = <(2)>;
-		mediatek,mtd-eeprom = <&config 0xe083>;
+		mediatek,mtd-eeprom = <&factory 0x8000>;
 
 		led {
 			led-sources = <0>;
@@ -155,13 +151,7 @@
 
 &ethernet {
 	pinctrl-names = "default";
-	pinctrl-0 = <&rgmii1_pins &rgmii2_pins &mdio_pins>;
-
-	port@4 {
-		status = "okay";
-		phy-handle = <&phy4>;
-		phy-mode = "rgmii";
-	};
+	pinctrl-0 = <&rgmii1_pins &mdio_pins>;
 
 	port@5 {
 		status = "okay";
@@ -172,11 +162,6 @@
 	mdio-bus {
 		status = "okay";
 
-		phy4: ethernet-phy@4 {
-			reg = <4>;
-			phy-mode = "rgmii-rxid";
-		};
-
 		phy5: ethernet-phy@5 {
 			reg = <5>;
 			phy-mode = "rgmii-rxid";
@@ -185,5 +170,11 @@
 };
 
 &gsw {
-	mediatek,port4 = "gmac";
+	mediatek,port4-gmac;
+};
+
+&wmac {
+	ralink,mtd-eeprom = <&factory 0x0>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&pa_pins>;
 };

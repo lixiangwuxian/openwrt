@@ -227,43 +227,30 @@ endef
 TARGET_DEVICES += dlink_dwr-116-a1
 
 define Device/dlink_dwr-118-a1
-  $(Device/amit_jboot)
   SOC := mt7620a
-  IMAGE_SIZE := 16256k
-  DEVICE_VENDOR := D-Link
-  DEVICE_MODEL := DWR-118
-  DEVICE_VARIANT := A1
-  DEVICE_PACKAGES += kmod-mt76x0e
-  DLINK_ROM_ID := DLK6E3811001
-  DLINK_FAMILY_MEMBER := 0x6E38
-  DLINK_FIRMWARE_SIZE := 0xFE0000
+  IMAGE_SIZE := 15872k
+  DEVICE_VENDOR := LeGuang
+  DEVICE_MODEL := SR800
+  DEVICE_PACKAGES += kmod-mt76x2 kmod-usb2 kmod-usb-ohci
 endef
 TARGET_DEVICES += dlink_dwr-118-a1
 
 define Device/dlink_dwr-118-a2
-  $(Device/amit_jboot)
   SOC := mt7620a
-  IMAGE_SIZE := 16256k
-  DEVICE_VENDOR := D-Link
-  DEVICE_MODEL := DWR-118
-  DEVICE_VARIANT := A2
-  DEVICE_PACKAGES += kmod-mt76x2
-  DLINK_ROM_ID := DLK6E3814001
-  DLINK_FAMILY_MEMBER := 0x6E38
-  DLINK_FIRMWARE_SIZE := 0xFE0000
+  IMAGE_SIZE := 15872k
+  DEVICE_VENDOR := LeGuang
+  DEVICE_MODEL := SR900
+  DEVICE_VARIANT := A1
+  DEVICE_PACKAGES += kmod-mt76x2 kmod-usb2 kmod-usb-ohci
 endef
 TARGET_DEVICES += dlink_dwr-118-a2
 
 define Device/dlink_dwr-921-c1
-  $(Device/amit_jboot)
   SOC := mt7620n
   IMAGE_SIZE := 16256k
   DEVICE_VENDOR := D-Link
   DEVICE_MODEL := DWR-921
   DEVICE_VARIANT := C1
-  DLINK_ROM_ID := DLK6E2414001
-  DLINK_FAMILY_MEMBER := 0x6E24
-  DLINK_FIRMWARE_SIZE := 0xFE0000
   DEVICE_PACKAGES += kmod-usb-net-qmi-wwan kmod-usb-serial-option uqmi
 endef
 TARGET_DEVICES += dlink_dwr-921-c1

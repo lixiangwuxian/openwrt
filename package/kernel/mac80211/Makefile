@@ -10,10 +10,10 @@ include $(INCLUDE_DIR)/kernel.mk
 
 PKG_NAME:=mac80211
 
-PKG_VERSION:=5.10.68-1
+PKG_VERSION:=5.10.149-1
 PKG_RELEASE:=1
-PKG_SOURCE_URL:=@KERNEL/linux/kernel/projects/backports/stable/v5.10.68/
-PKG_HASH:=bba161b0084590c677a84b80993709e388a3c478f29ed0c475d4fce1b9162968
+PKG_SOURCE_URL:=@KERNEL/linux/kernel/projects/backports/stable/v5.10.149/
+PKG_HASH:=80a68a78c9b18513bad0bbd0cb70907eadbfd9bba44c075a94f0795fd7f7be2a
 
 PKG_SOURCE:=backports-$(PKG_VERSION).tar.xz
 PKG_BUILD_DIR:=$(KERNEL_BUILD_DIR)/backports-$(PKG_VERSION)
@@ -434,9 +434,15 @@ config-$(call config_package,rsi91x-sdio) += RSI_SDIO
 
 config-$(CONFIG_LEDS_TRIGGERS) += MAC80211_LEDS
 
+C_DEFINES=
+
+ifeq ($(BUILD_VARIANT),smallbuffers)
+	C_DEFINES+= -DCONFIG_ATH10K_SMALLBUFFERS
+endif
+
 MAKE_OPTS:= -C "$(PKG_BUILD_DIR)" \
 	$(KERNEL_MAKE_FLAGS) \
-	EXTRA_CFLAGS="-I$(PKG_BUILD_DIR)/include $(IREMAP_CFLAGS)" \
+	EXTRA_CFLAGS="-I$(PKG_BUILD_DIR)/include $(IREMAP_CFLAGS) $(C_DEFINES)" \
 	KLIB_BUILD="$(LINUX_DIR)" \
 	MODPROBE=true \
 	KLIB=$(TARGET_MODULES_DIR) \
